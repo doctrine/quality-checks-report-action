@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "PWD: $PWD\n"
+ls -aFlh
 CURRENT=`dirname $0`
 
 cd $CURRENT
