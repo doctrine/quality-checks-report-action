@@ -16,7 +16,20 @@ echo file_get_contents("/tmp/phpcs.xml");
 
 function get_base_git_branch() : string
 {
-    return str_replace("refs/heads/", "origin/", $_SERVER['GITHUB_REF']) . "...";
+    if (strlen($_SERVER['GITHUB_BASE_REF'] ?? '') > 0) {
+        return $_SERVER['GITHUB_BASE_REF'];
+    }
+
+    return str_replace("refs/heads/", "", $_SERVER['GITHUB_REF']) . "...";
+}
+
+function get_head_git_ref() : string
+{
+    if (strlen($_SERVER['GITHUB_HEAD_REF'] ?? '') > 0) {
+        return $_SERVER['GITHUB_HEAD_REF'];
+    }
+
+    return $_SERVER['GITHUB_SHA'];
 }
 
 function generate_diff_to_base($repositoryRoot) : void
@@ -28,7 +41,7 @@ function generate_diff_to_base($repositoryRoot) : void
     $cmd = sprintf(
         '(git diff $(git merge-base %s %s) > /tmp/base.diff)',
         escapeshellarg($base),
-        escapeshellarg($_SERVER['GITHUB_SHA']),
+        escapeshellarg(get_head_git_ref()),
     );
     shell_exec($cmd);
 }
