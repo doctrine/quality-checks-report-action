@@ -5,6 +5,8 @@ require_once '/app/vendor/autoload.php';
 function get_base_git_branch() : string
 {
     if (strlen($_SERVER['GITHUB_BASE_REF'] ?? '') > 0) {
+        // This env variable is non empty on pull_request events
+        // Github Actions only has branches available under `remotes/origin`.
         return "remotes/origin/" . $_SERVER['GITHUB_BASE_REF'];
     }
 
@@ -14,6 +16,8 @@ function get_base_git_branch() : string
 function get_head_git_ref() : string
 {
     if (strlen($_SERVER['GITHUB_HEAD_REF'] ?? '') > 0) {
+        // This env variable is non empty on pull_request events
+        // Github Actions only has branches available under `remotes/origin`.
         return "remotes/origin/" . $_SERVER['GITHUB_HEAD_REF'];
     }
 
@@ -33,6 +37,7 @@ function generate_diff_to_base($repositoryRoot) : void
     );
     shell_exec($cmd);
 }
+
 function calculate_changed_violation_lines(string $file) : array
 {
     $diff = new \exussum12\CoverageChecker\DiffFileLoader('/tmp/base.diff');
@@ -49,4 +54,18 @@ generate_diff_to_base($_SERVER['PWD']);
 
 echo file_get_contents("/tmp/base.diff");
 
-var_dump(calculate_changed_violation_lines("/tmp/phpcs.xml"));
+$violations = (calculate_changed_violation_lines("/tmp/phpcs.xml"));
+
+if (count($violations) > 0) {
+    foreach ($violations as $file => $fileViolations) {
+        foreach ($fileViolations as $line => $lineViolations) {
+            foreach ($lineViolations as $lineViolation) {
+                printf("%s:%d: %s\n", $file, $line, $lineViolation);
+            }
+        }
+    }
+
+    exit(1);
+}
+
+echo "all check runners OK!\n";
