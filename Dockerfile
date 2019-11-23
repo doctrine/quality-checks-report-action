@@ -5,6 +5,4 @@ WORKDIR '/app'
 RUN curl -sS https://getcomposer.org/installer | \
             php -- --install-dir=/usr/bin/ --filename=composer
 
-RUN composer install
-
-CMD ["php", "runner.php"]
+CMD ["/bin/bash", "runner.sh"]
