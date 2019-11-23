@@ -1,0 +1,117 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "b042816c8e352b7f59ae1f93f36b7065",
+    "packages": [
+        {
+            "name": "exussum12/coverage-checker",
+            "version": "0.11.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/exussum12/coverageChecker.git",
+                "reference": "ad0eb95b255bb9d18723f87146750b1a69e4ee16"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/exussum12/coverageChecker/zipball/ad0eb95b255bb9d18723f87146750b1a69e4ee16",
+                "reference": "ad0eb95b255bb9d18723f87146750b1a69e4ee16",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": "^3.1||^4.0",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "bin": [
+                "bin/phpunitDiffFilter",
+                "bin/phpcsDiffFilter",
+                "bin/phpmdDiffFilter",
+                "bin/diffFilter"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "exussum12\\CoverageChecker\\": "src/",
+                    "exussum12\\CoverageChecker\\tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Scott Dutton",
+                    "email": "scott@exussum.co.uk"
+                }
+            ],
+            "description": "Allows checking the code coverage of a single pull request",
+            "time": "2019-04-17T05:12:24+00:00"
+        },
+        {
+            "name": "nikic/php-parser",
+            "version": "v4.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/PHP-Parser.git",
+                "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9a9981c347c5c49d6dfe5cf826bb882b824080dc",
+                "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "ircmaxell/php-yacc": "0.0.5",
+                "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0"
+            },
+            "bin": [
+                "bin/php-parse"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PhpParser\\": "lib/PhpParser"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Popov"
+                }
+            ],
+            "description": "A PHP parser written in PHP",
+            "keywords": [
+                "parser",
+                "php"
+            ],
+            "time": "2019-11-08T13:50:10+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

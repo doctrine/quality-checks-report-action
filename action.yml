@@ -1,0 +1,6 @@
+name: doctrine/quality-checks-report
+author: Doctrine Team
+description: Runs static analzers and posts results with Github Checks API
+runs:
+    using: docker
+    image: Dockerfile
