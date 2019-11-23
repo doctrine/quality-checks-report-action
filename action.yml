@@ -4,3 +4,6 @@ description: Runs static analzers and posts results with Github Checks API
 runs:
     using: docker
     image: Dockerfile
+branding:
+    icon: arrow-right-circle
+    color: orange
