@@ -6,14 +6,14 @@ echo "Hello world!";
 
 var_dump(array_keys($_SERVER));
 var_dump($_SERVER['GITHUB_WORKSPACE']);
-var_dump($_SERVER['GITHUB_BASEREF']);
-var_dump($_SERVER['GITHUB_HEADREF']);
+var_dump($_SERVER['GITHUB_BASE_REF']);
+var_dump($_SERVER['GITHUB_HEAD_REF']);
 
 echo file_get_contents("/tmp/phpcs.xml");
 
 function get_base_git_branch() : string
 {
-    return $_SERVER['GITHUB_BASEREF'];
+    return $_SERVER['GITHUB_BASE_REF'];
 }
 
 function generate_diff_to_base($repositoryRoot) : void
@@ -25,7 +25,7 @@ function generate_diff_to_base($repositoryRoot) : void
     $cmd = sprintf(
         '(git diff $(git merge-base %s %s) > /tmp/base.diff)',
         escapeshellarg($base),
-        escapeshellarg($_SERVER['GITHUB_HEADREF']),
+        escapeshellarg($_SERVER['GITHUB_HEAD_REF']),
     );
     shell_exec($cmd);
 }
@@ -41,6 +41,8 @@ function calculate_changed_violation_lines(string $file) : array
     return $lines['uncoveredLines'];
 }
 
-generate_diff_to_base();
+generate_diff_to_base($_SERVER['PWD']);
 
 echo file_get_contents("/tmp/base.diff");
+
+var_dump(calculate_changed_violation_lines("/tmp/phpcs.xml"));
