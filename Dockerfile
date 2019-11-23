@@ -7,4 +7,6 @@ RUN curl -sS https://getcomposer.org/installer | \
 
 ADD ["composer.json", "runner.sh", "runner.php", "/app"]
 
+RUN composer install
+
 CMD ["/bin/bash", "runner.sh"]
