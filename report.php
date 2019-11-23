@@ -52,8 +52,6 @@ function calculate_changed_violation_lines(string $file) : array
 
 generate_diff_to_base($_SERVER['PWD']);
 
-echo file_get_contents("/tmp/base.diff");
-
 $githubToken = $_SERVER['GITHUB_TOKEN'];
 $repo = $_SERVER['GITHUB_REPOSITORY'];
 
@@ -66,8 +64,6 @@ $checkstyleParser = new \Doctrine\GithubActions\CheckstyleParser();
 foreach ($tools as $tool) {
     $changedViolations = (calculate_changed_violation_lines("/tmp/" . $tool . ".xml"));
     $violations = $checkstyleParser->parseFile('/tmp/' . $tool . '.xml', $_SERVER['PWD']);
-
-    var_dump($changedViolations, $violations);
 
     if (count($violations) > 0) {
         $annotations = [];
@@ -117,8 +113,8 @@ foreach ($tools as $tool) {
             CURLOPT_HTTPHEADER,
             [
                 'Accept: application/vnd.github.antiope-preview+json',
-                'Authorization: token ' . $githubToken,
-                'User-Agent: Tideways-Checker-App',
+                'Authorization: Bearer ' . $githubToken,
+                'User-Agent: https://github.com/doctrine/quality-checks-report-action',
             ]
         );
 
