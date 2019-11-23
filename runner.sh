@@ -8,5 +8,3 @@ then
 fi
 
 php /app/report.php
-
-git branch -a #debug
