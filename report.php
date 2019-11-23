@@ -1,6 +1,6 @@
 <?php
 
-require_once 'vendor/autoload.php';
+require_once '/app/vendor/autoload.php';
 
 echo "Hello world!";
 
@@ -16,7 +16,7 @@ echo file_get_contents("/tmp/phpcs.xml");
 
 function get_base_git_branch() : string
 {
-    return $_SERVER['GITHUB_BASE_REF'];
+    return $_SERVER['GITHUB_REF'];
 }
 
 function generate_diff_to_base($repositoryRoot) : void
@@ -28,7 +28,7 @@ function generate_diff_to_base($repositoryRoot) : void
     $cmd = sprintf(
         '(git diff $(git merge-base %s %s) > /tmp/base.diff)',
         escapeshellarg($base),
-        escapeshellarg($_SERVER['GITHUB_HEAD_REF']),
+        escapeshellarg($_SERVER['GITHUB_SHA']),
     );
     shell_exec($cmd);
 }
