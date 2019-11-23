@@ -16,7 +16,7 @@ echo file_get_contents("/tmp/phpcs.xml");
 
 function get_base_git_branch() : string
 {
-    return $_SERVER['GITHUB_REF'];
+    return str_replace("refs/heads/", "origin/", $_SERVER['GITHUB_REF']) . "...";
 }
 
 function generate_diff_to_base($repositoryRoot) : void
