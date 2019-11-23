@@ -1,14 +1,6 @@
 #!/bin/bash
 
-echo "PWD: $PWD\n"
-ls -aFlh
-CURRENT=`dirname $0`
-
-cd $CURRENT
-composer install --prefer-dist
-
-cd -
-composer install --prefer-dist
+composer install --prefer-dist --no-progress
 
 if [ -f "/github/workspace/vendor/bin/phpcs" ];
 then
