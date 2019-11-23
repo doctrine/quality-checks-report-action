@@ -4,10 +4,13 @@ require_once 'vendor/autoload.php';
 
 echo "Hello world!";
 
-var_dump(array_keys($_SERVER));
-var_dump($_SERVER['GITHUB_WORKSPACE']);
-var_dump($_SERVER['GITHUB_BASE_REF']);
-var_dump($_SERVER['GITHUB_HEAD_REF']);
+$githubVars = [];
+foreach ($_SERVER as $k => $v) {
+    if (strpos($k, 'GITHUB_') === 0) {
+        $githubVars[$k] = $v;
+    }
+}
+var_dump($githubVars);
 
 echo file_get_contents("/tmp/phpcs.xml");
 
