@@ -11,4 +11,4 @@ ADD ["composer.json", "composer.lock", "runner.sh", "runner.php", "/app/"]
 
 RUN composer install --prefer-dist
 
-CMD ["/bin/bash", "runner.sh"]
+CMD ["/bin/bash", "/app/runner.sh"]
