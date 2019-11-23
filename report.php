@@ -2,31 +2,19 @@
 
 require_once '/app/vendor/autoload.php';
 
-echo "Hello world!";
-
-$githubVars = [];
-foreach ($_SERVER as $k => $v) {
-    if (strpos($k, 'GITHUB_') === 0) {
-        $githubVars[$k] = $v;
-    }
-}
-var_dump($githubVars);
-
-echo file_get_contents("/tmp/phpcs.xml");
-
 function get_base_git_branch() : string
 {
     if (strlen($_SERVER['GITHUB_BASE_REF'] ?? '') > 0) {
-        return $_SERVER['GITHUB_BASE_REF'];
+        return "remotes/origin/" . $_SERVER['GITHUB_BASE_REF'];
     }
 
-    return str_replace("refs/heads/", "", $_SERVER['GITHUB_REF']) . "...";
+    return str_replace("refs/heads/", "remotes/origin/", $_SERVER['GITHUB_REF']) . "...";
 }
 
 function get_head_git_ref() : string
 {
     if (strlen($_SERVER['GITHUB_HEAD_REF'] ?? '') > 0) {
-        return $_SERVER['GITHUB_HEAD_REF'];
+        return "remotes/origin/" . $_SERVER['GITHUB_HEAD_REF'];
     }
 
     return $_SERVER['GITHUB_SHA'];
