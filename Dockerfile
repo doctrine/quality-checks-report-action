@@ -7,7 +7,7 @@ RUN set -eux; apt-get update; apt-get install -y git libzip-dev zlib1g-dev; dock
 RUN curl -sS https://getcomposer.org/installer | \
             php -- --install-dir=/usr/bin/ --filename=composer
 
-ADD ["composer.json", "composer.lock", "runner.sh", "report.php", "/app/"]
+ADD ["composer.json", "composer.lock", "runner.sh", "report.php", "src",t "/app/"]
 
 RUN composer install --prefer-dist --no-progress
 

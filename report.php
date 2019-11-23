@@ -54,18 +54,107 @@ generate_diff_to_base($_SERVER['PWD']);
 
 echo file_get_contents("/tmp/base.diff");
 
-$violations = (calculate_changed_violation_lines("/tmp/phpcs.xml"));
+$githubToken = $_SERVER['GITHUB_TOKEN'];
+$repo = $_SERVER['GITHUB_REPOSITORY'];
 
-if (count($violations) > 0) {
-    foreach ($violations as $file => $fileViolations) {
-        foreach ($fileViolations as $line => $lineViolations) {
-            foreach ($lineViolations as $lineViolation) {
-                printf("%s:%d: %s\n", $file, $line, $lineViolation);
+$tools = ['phpcs'];
+$bufferByJob = [];
+$renderedFailuresByJob = [];
+
+$checkstyleParser = new \Doctrine\GithubActions\CheckstyleParser();
+
+foreach ($tools as $tool) {
+    $changedViolations = (calculate_changed_violation_lines("/tmp/" . $tool . ".xml"));
+    $violations = $checkstyleParser->parseFile('/tmp/' . $tool . '.xml', $_SERVER['PWD']);
+
+    var_dump($changedViolations, $violations);
+
+    if (count($violations) > 0) {
+        $annotations = [];
+        $buffer = "";
+
+        foreach ($violations as $failure) {
+            if (isset($changedViolations[$failure['file']][$failure['line']])) {
+                printf("[%s] %s:%d - %s\n", $tool, $failure['file'], $failure['line'], $failure['body']);
+
+                $buffer .= "<details>\n";
+                $buffer .= "<summary><code>{$failure['name']} in {$failure['class']} {$failure['file']}:{$failure['line']}</code></summary>\n\n";
+
+                if (strlen($failure['body']) > 0) {
+                    $buffer .= "<code><pre class=\"term\">{$failure['body']}</pre></code>\n\n";
+                }
+
+                $buffer .= "in <a href=\"##{$failure['job']}\">Job {$failure['job']}</a>\n";
+                $buffer .= "</details>";
+                $buffer .= "\n\n\n";
+
+                if (count($annotations) >= 50) {
+                    continue;
+                }
+
+                $annotations[] = [
+                    'path' => $file,
+                    'start_line' => $failure['line'],
+                    'end_line' => $failure['line'],
+                    'annotation_level' => $failure['type'],
+                    'raw_details' => substr($failure['body'], 0, 64 * 1024),
+                    'message' => "{$failure['name']} in {$failure['class']}: " . substr($failure['body'], 0, 128),
+                ];
             }
         }
-    }
 
-    exit(1);
+        $titlesByTool = [
+            'phpcs' => 'PHP Code Sniffer',
+            'phan' => 'Phan Static Analyzer',
+            'phpstan' => 'PHP Stan',
+            'psalm' => 'Psalm Static Analyzer',
+        ];
+
+        $ch = curl_init("https://api.github.com/repos/{$repo}/check-runs");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
+                'Accept: application/vnd.github.antiope-preview+json',
+                'Authorization: token ' . $githubToken,
+                'User-Agent: Tideways-Checker-App',
+            ]
+        );
+
+        $data = json_encode([
+            'name' => 'doctrine-' . $tool,
+            'head_sha' => $_SERVER['GITHUB_SHA'],
+            'status' => 'completed',
+            'conclusion' => count($violations) === 0 ? 'success' : 'failure',
+            'completed_at' => gmdate('Y-m-d') . 'T' . gmdate('H:i:s') . 'Z',
+            'output' => [
+                'title' => $titlesByTool[$tool] . ' Report',
+                'summary' => "There are " . count($violations) . " errors.",
+                'text' => $buffer,
+                'annotations' => $annotations,
+            ],
+        ], JSON_PARTIAL_OUTPUT_ON_ERROR);
+
+        if (!$data) {
+            fwrite(STDERR, sprintf("--- :warning: :github: Error for job %s - json_encode failed with json_last_error() == %s\n", $job, json_last_error_msg()));
+
+            continue;
+        }
+
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        $response = curl_exec($ch);
+        $info = curl_getinfo($ch);
+
+        if ($info['http_code'] >= 400) {
+            fwrite(STDERR, sprintf("--- :warning: :github: Error for job %s [%d] %s\n", $job, $info['http_code'], $response));
+            fwrite(STDERR, sprintf("data sent:\n%s\n", $data));
+
+            continue;
+        }
+    }
 }
 
 echo "all check runners OK!\n";

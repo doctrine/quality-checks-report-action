@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Doctrine\\GithubActions\\": "src"
+        }
+    },
     "require": {
         "exussum12/coverage-checker": "^0.11.2"
     }
