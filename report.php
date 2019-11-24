@@ -95,13 +95,16 @@ foreach ($tools as $tool) {
                 }
 
                 $annotations[] = [
-                    'path' => $file,
+                    'path' => $failure['file'],
                     'start_line' => $failure['line'],
                     'end_line' => $failure['line'],
                     'annotation_level' => $failure['type'],
                     'raw_details' => substr($failure['body'], 0, 64 * 1024),
                     'message' => "{$failure['name']} in {$failure['class']}: " . substr($failure['body'], 0, 128),
                 ];
+            } else {
+                // violations outside diff
+                $buffer .= "<code>{$failure['name']} in {$failure['class']} {$failure['file']}:{$failure['line']}</code>\n\n";
             }
         }
 
