@@ -94,13 +94,12 @@ foreach ($tools as $tool) {
                 printf("[%s] %s:%d - %s\n", $tool, $failure['file'], $failure['line'], $failure['body']);
 
                 $buffer .= "<details>\n";
-                $buffer .= "<summary><code>{$failure['name']} in {$failure['class']} {$failure['file']}:{$failure['line']}</code></summary>\n\n";
+                $buffer .= "<summary>`{$failure['name']}` in {$failure['file']}:{$failure['line']}</summary>\n\n";
 
                 if (strlen($failure['body']) > 0) {
-                    $buffer .= "<code><pre class=\"term\">{$failure['body']}</pre></code>\n\n";
+                    $buffer .= "```\n{$failure['body']}\n```";
                 }
 
-                $buffer .= "in <a href=\"##{$failure['job']}\">Job {$failure['job']}</a>\n";
                 $buffer .= "</details>";
                 $buffer .= "\n\n\n";
 
@@ -118,7 +117,7 @@ foreach ($tools as $tool) {
                 ];
             } else {
                 // violations outside diff
-                $buffer .= "<code>{$failure['name']} in {$failure['class']} {$failure['file']}:{$failure['line']}</code>\n\n";
+                $buffer .= "`{$failure['name']}` in {$failure['file']}:{$failure['line']}\n";
             }
         }
 
