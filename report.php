@@ -65,7 +65,7 @@ $checkstyleParser = new \Doctrine\GithubActions\CheckstyleParser();
 
 $failed = false;
 
-$output = explode(" ", shell_exec("git log " . $_SREVER['GITHUB_HEAD_REF'] . "^1 --oneline -n1"));
+$output = explode(" ", shell_exec("git log " . $_SERVER['GITHUB_HEAD_REF'] . "^1 --oneline -n1"));
 $previousShaBeforeMergeCommit = $output[0];
 
 printf("Last commit is %s\n", $previousShaBeforeMergeCommit);
