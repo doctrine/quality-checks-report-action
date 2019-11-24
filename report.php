@@ -53,7 +53,10 @@ function calculate_changed_violation_lines(string $file) : array
 generate_diff_to_base($_SERVER['PWD']);
 
 $githubToken = $_SERVER['GITHUB_TOKEN'];
+echo "token: " . strlen($githubToken) . " ".substr($githubToken, 0, 2) . "\n";
 $repo = $_SERVER['GITHUB_REPOSITORY'];
+
+printf("Analyzing %s changes between %s to %s\n", $repo, get_base_git_branch(), get_head_git_ref());
 
 $tools = ['phpcs'];
 $bufferByJob = [];
@@ -61,11 +64,14 @@ $renderedFailuresByJob = [];
 
 $checkstyleParser = new \Doctrine\GithubActions\CheckstyleParser();
 
+$failed = false;
+
 foreach ($tools as $tool) {
     $changedViolations = (calculate_changed_violation_lines("/tmp/" . $tool . ".xml"));
     $violations = $checkstyleParser->parseFile('/tmp/' . $tool . '.xml', $_SERVER['PWD']);
 
     if (count($violations) > 0) {
+        $failed = true;
         $annotations = [];
         $buffer = "";
 
@@ -113,7 +119,7 @@ foreach ($tools as $tool) {
             CURLOPT_HTTPHEADER,
             [
                 'Accept: application/vnd.github.antiope-preview+json',
-                'Authorization: Bearer ' . $githubToken,
+                'Authorization: token ' . $githubToken,
                 'User-Agent: https://github.com/doctrine/quality-checks-report-action',
             ]
         );
@@ -153,4 +159,9 @@ foreach ($tools as $tool) {
     }
 }
 
-echo "all check runners OK!\n";
+if ($failed) {
+    echo "Failures found\n";
+    exit(1);
+} else {
+    echo "all check runners OK!\n";
+}
