@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -xe
-
 cd $GITHUB_WORKSPACE
 
 composer install --prefer-dist --no-progress
@@ -12,3 +10,4 @@ then
 fi
 
 php /app/report.php
+exit $?
