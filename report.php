@@ -53,7 +53,6 @@ function calculate_changed_violation_lines(string $file) : array
 generate_diff_to_base($_SERVER['PWD']);
 
 $githubToken = $_SERVER['GITHUB_TOKEN'];
-echo "token: " . strlen($githubToken) . " ".substr($githubToken, 0, 2) . "\n";
 $repo = $_SERVER['GITHUB_REPOSITORY'];
 
 printf("Analyzing %s changes between %s to %s\n", $repo, get_base_git_branch(), get_head_git_ref());
@@ -66,7 +65,7 @@ $checkstyleParser = new \Doctrine\GithubActions\CheckstyleParser();
 
 $failed = false;
 
-$output = explode(" ", shell_exec("git log " . $_SREVER['GITHUB_HEAD_REF'] . " --oneline -n1"));
+$output = explode(" ", shell_exec("git log " . $_SREVER['GITHUB_HEAD_REF'] . "^1 --oneline -n1"));
 $previousShaBeforeMergeCommit = $output[0];
 
 printf("Last commit is %s\n", $previousShaBeforeMergeCommit);
