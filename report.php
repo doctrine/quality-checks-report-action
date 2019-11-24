@@ -97,11 +97,11 @@ foreach ($tools as $tool) {
                 $buffer .= "<summary>`{$failure['name']}` in {$failure['file']}:{$failure['line']}</summary>\n\n";
 
                 if (strlen($failure['body']) > 0) {
-                    $buffer .= "```\n{$failure['body']}\n```";
+                    $buffer .= "```\n{$failure['body']}\n```\n";
                 }
 
                 $buffer .= "</details>";
-                $buffer .= "\n\n\n";
+                $buffer .= "\n\n";
 
                 if (count($annotations) >= 50) {
                     continue;
