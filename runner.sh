@@ -9,7 +9,5 @@ then
     ./vendor/bin/phpcs --report-checkstyle=/tmp/phpcs.xml
 fi
 
-git log -n 5
-
 php /app/report.php
 exit $?

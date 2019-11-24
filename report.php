@@ -66,6 +66,9 @@ $checkstyleParser = new \Doctrine\GithubActions\CheckstyleParser();
 
 $failed = false;
 
+$output = explode(" ", shell_exec("git log HEAD^1 --oneline -n1"));
+$previousShaBeforeMergeCommit = $output[0];
+
 foreach ($tools as $tool) {
     $changedViolations = (calculate_changed_violation_lines("/tmp/" . $tool . ".xml"));
     $violations = $checkstyleParser->parseFile('/tmp/' . $tool . '.xml', $_SERVER['PWD']);
@@ -76,7 +79,13 @@ foreach ($tools as $tool) {
         $buffer = "";
 
         if (count($changedViolations) > 0) {
-            printf("There are %d violations directly in lines that were changed in the diff:\n", count($changedViolations));
+            $count = 0;
+            foreach ($changedViolations as $fileViolations) {
+                foreach ($fileViolations as $lineViolations) {
+                    $count += count($lineViolations);
+                }
+            }
+            printf("There are %d violations directly in lines that were changed in the diff:\n", $count);
         }
 
         foreach ($violations as $failure) {
@@ -133,7 +142,7 @@ foreach ($tools as $tool) {
 
         $data = json_encode([
             'name' => 'doctrine-' . $tool,
-            'head_sha' => $_SERVER['GITHUB_SHA'],
+            'head_sha' => $previousShaBeforeMergeCommit,
             'status' => 'completed',
             'conclusion' => count($violations) === 0 ? 'success' : 'failure',
             'completed_at' => gmdate('Y-m-d') . 'T' . gmdate('H:i:s') . 'Z',
