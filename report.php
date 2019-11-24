@@ -75,6 +75,10 @@ foreach ($tools as $tool) {
         $annotations = [];
         $buffer = "";
 
+        if (count($changedViolations) > 0) {
+            printf("There are %d violations directly in lines that were changed in the diff:\n", count($changedViolations));
+        }
+
         foreach ($violations as $failure) {
             if (isset($changedViolations[$failure['file']][$failure['line']])) {
                 printf("[%s] %s:%d - %s\n", $tool, $failure['file'], $failure['line'], $failure['body']);
