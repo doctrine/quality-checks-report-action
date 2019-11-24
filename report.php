@@ -69,6 +69,8 @@ $failed = false;
 $output = explode(" ", shell_exec("git log HEAD^1 --oneline -n1"));
 $previousShaBeforeMergeCommit = $output[0];
 
+printf("Last commit is %s\n", $previousShaBeforeMergeCommit);
+
 foreach ($tools as $tool) {
     $changedViolations = (calculate_changed_violation_lines("/tmp/" . $tool . ".xml"));
     $violations = $checkstyleParser->parseFile('/tmp/' . $tool . '.xml', $_SERVER['PWD']);
